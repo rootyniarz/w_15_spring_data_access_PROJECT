@@ -33,7 +33,8 @@ CONSTRAINT fk_product_producer
 FOREIGN KEY (producer_id) REFERENCES producer (id)
 );
 
-CREATE TABLE purchase ( id SERIAL NOT NULL,
+CREATE TABLE purchase (
+id               SERIAL            NOT NULL,
 customer_id      INT               NOT NULL,
 product_id       INT               NOT NULL,
 quantity         INT               NOT NULL,
@@ -45,7 +46,8 @@ CONSTRAINT fk_purchase_product
  FOREIGN KEY (product_id) REFERENCES product (id)
 );
 
-CREATE TABLE opinion ( id SERIAL NOT NULL,
+CREATE TABLE opinion (
+id               SERIAL                          NOT NULL,
 customer_id      INT                             NOT NULL,
 product_id       INT                             NOT NULL,
 stars            INT CHECK(stars IN (1,2,3,4,5)) NOT NULL,
