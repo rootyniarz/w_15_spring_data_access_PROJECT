@@ -19,6 +19,11 @@ public class OpinionService {
     public void removeAll(){
         opinionRepository.removeAll();
     }
+
+    @Transactional
+    public void removeAll(String email) {
+
+    }
 }
 
 

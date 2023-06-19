@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import pl.zajavka.business.*;
-import pl.zajavka.domain.*;
+import pl.zajavka.domain.Customer;
+import pl.zajavka.domain.Producer;
+import pl.zajavka.domain.Product;
+import pl.zajavka.domain.StoreFixtures;
 import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)
@@ -53,11 +56,27 @@ public class CustomerServiceTest {
         final Producer producer = producerService.create(StoreFixtures.someProducer());
         final Product product1 = productService.create(StoreFixtures.someProduct1(producer));
         final Product product2 = productService.create(StoreFixtures.someProduct2(producer));
-        final Purchase purchase1 = purchaseService.create(StoreFixtures.somePurchase(customer, product1).withQuantity(1));
-        final Purchase purchase2 = purchaseService.create(StoreFixtures.somePurchase(customer, product2).withQuantity(3));
-        final Opinion opinion = opinionService.create(StoreFixtures.someOpinion(customer, product1));
+        purchaseService.create(StoreFixtures.somePurchase(customer, product1).withQuantity(1));
+        purchaseService.create(StoreFixtures.somePurchase(customer, product2).withQuantity(3));
+        opinionService.create(StoreFixtures.someOpinion(customer, product1));
 
         Assertions.assertEquals(customer, customerService.find(customer.getEmail()));
+
+        //when
+        customerService.remove(customer.getEmail());
+
+        //then
+        RuntimeException exception = Assertions
+                .assertThrows(RuntimeException.class,
+                        () -> customerService.find(customer.getEmail()));
+        Assertions.assertEquals
+                ("Customer with email: [%s] is missing".
+                        formatted(customer.getEmail()), exception.getMessage());
+
+        Assertions.assertTrue(purchaseService.findAll(customer.getEmail()).isEmpty());
+        Assertions.assertTrue(opinionService.findAll(customer.getEmail()).isEmpty());
+
+
     }
 
     @Test

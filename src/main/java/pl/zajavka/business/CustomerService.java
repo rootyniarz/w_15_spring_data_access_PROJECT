@@ -29,6 +29,17 @@ public class CustomerService {
         return customerRepository.find(email)
                 .orElseThrow(()-> new RuntimeException("Customer with email: [%s] is missing".formatted(email)));
     }
+
+    @Transactional
+    public void remove(String email) {
+    Customer existingCustomer = find(email);
+
+    //TODO
+    opinionService.removeAll(email);
+
+    //TODO
+    purchaseService.removeAll(email);
+    }
 }
 
 

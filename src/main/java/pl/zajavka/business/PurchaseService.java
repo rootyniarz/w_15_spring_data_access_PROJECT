@@ -20,4 +20,9 @@ public class PurchaseService {
     public Purchase create(Purchase purchase) {
         return purchaseRepository.create(purchase);
     }
+
+    @Transactional
+    public void removeAll(String email) {
+
+    }
 }
