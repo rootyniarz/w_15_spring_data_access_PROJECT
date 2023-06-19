@@ -28,7 +28,7 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
                 .usingGeneratedKeyColumns(DatabaseConfiguration.PURCHASE_TABLE_PKEY.toLowerCase());
 
 //        Number purchaseId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(purchase));
-        Map<String,?> params = databaseMapper.map(purchase);
+        Map<String,?> params = databaseMapper.mapCustomer(purchase);
         Number purchaseId = jdbcInsert.executeAndReturnKey(params);
 
         return purchase.withId((long) purchaseId.intValue());

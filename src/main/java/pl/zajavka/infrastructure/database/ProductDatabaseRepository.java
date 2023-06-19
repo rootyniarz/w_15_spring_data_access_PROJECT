@@ -28,7 +28,7 @@ public class ProductDatabaseRepository implements ProductRepository {
                 .usingGeneratedKeyColumns(DatabaseConfiguration.PRODUCT_TABLE_PKEY.toLowerCase());
 
 //        Number productId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(product));
-        Map<String,?> params = databaseMapper.map(product);
+        Map<String,?> params = databaseMapper.mapCustomer(product);
         Number productId = jdbcInsert.executeAndReturnKey(params);
 
         return product.withId((long) productId.intValue());

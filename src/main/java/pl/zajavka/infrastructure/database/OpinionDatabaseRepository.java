@@ -29,7 +29,7 @@ public class OpinionDatabaseRepository implements OpinionRepository {
                 .usingGeneratedKeyColumns(DatabaseConfiguration.OPINION_TABLE_PKEY.toLowerCase());
 
 //        Number opinionId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(opinion));
-        Map<String,?> params = databaseMapper.map(opinion);
+        Map<String,?> params = databaseMapper.mapCustomer(opinion);
         Number opinionId = jdbcInsert.executeAndReturnKey(params);
 
         return opinion.withId((long) opinionId.intValue());

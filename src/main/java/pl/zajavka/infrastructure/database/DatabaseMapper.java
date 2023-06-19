@@ -1,11 +1,14 @@
 package pl.zajavka.infrastructure.database;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import pl.zajavka.domain.Customer;
 import pl.zajavka.domain.Opinion;
 import pl.zajavka.domain.Product;
 import pl.zajavka.domain.Purchase;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -15,7 +18,7 @@ public class DatabaseMapper {
     private static final DateTimeFormatter DATABASE_DATE_FORMAT
             = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
 
-    public Map<String, ?> map(Product product) {
+    public Map<String, ?> mapCustomer(Product product) {
         return Map.of(
                 "product_code", product.getProductCode(),
                 "product_name", product.getProductName(),
@@ -26,7 +29,7 @@ public class DatabaseMapper {
         );
     }
 
-    public Map<String, ?> map(Purchase purchase) {
+    public Map<String, ?> mapCustomer(Purchase purchase) {
         return Map.of(
                 "customer_id", purchase.getCustomer().getId(),
                 "product_id", purchase.getProduct().getId(),
@@ -35,7 +38,7 @@ public class DatabaseMapper {
         );
     }
 
-    public Map<String, ?> map(Opinion opinion) {
+    public Map<String, ?> mapCustomer(Opinion opinion) {
         return Map.of(
                 "customer_id", opinion.getCustomer().getId(),
                 "product_id", opinion.getProduct().getId(),
@@ -43,5 +46,18 @@ public class DatabaseMapper {
                 "comment", opinion.getComment(),
                 "date_time", DATABASE_DATE_FORMAT.format(opinion.getDateTime())
         );
+    }
+
+    @SuppressWarnings("unused")
+    public Customer mapCustomer(ResultSet resultSet, int rowNum) throws SQLException {
+        return Customer.builder()
+                .id(resultSet.getLong("ID"))
+                .userName(resultSet.getString("user_name"))
+                .email(resultSet.getString("email"))
+                .name(resultSet.getString("name"))
+                .surname(resultSet.getString("surname"))
+                .dateOfBirth(LocalDate.parse(resultSet.getString("date_of_birth")))
+                .telephoneNumber(resultSet.getString("telephone_number"))
+                .build();
     }
 }

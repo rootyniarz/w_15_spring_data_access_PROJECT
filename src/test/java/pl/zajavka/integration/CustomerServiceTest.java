@@ -1,5 +1,6 @@
 package pl.zajavka.integration;
 
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import pl.zajavka.domain.*;
 import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomerServiceTest {
 
     private ReloadDataService reloadDataService;
@@ -20,22 +22,26 @@ public class CustomerServiceTest {
     private ProducerService producerService;
     private ProductService productService;
 
-    @Autowired
-    public CustomerServiceTest(
-            CustomerService customerService,
-            PurchaseService purchaseService,
-            OpinionService opinionService
-    ) {
-        this.customerService = customerService;
-        this.purchaseService = purchaseService;
-        this.opinionService = opinionService;
-    }
+//    @Autowired
+//    public CustomerServiceTest(
+//            CustomerService customerService,
+//            PurchaseService purchaseService,
+//            OpinionService opinionService
+//    ) {
+//        this.customerService = customerService;
+//        this.purchaseService = purchaseService;
+//        this.opinionService = opinionService;
+//    }
 
     @BeforeEach
     public void setUp() {
+        Assertions.assertNotNull(reloadDataService);
         Assertions.assertNotNull(customerService);
         Assertions.assertNotNull(purchaseService);
         Assertions.assertNotNull(opinionService);
+        Assertions.assertNotNull(producerService);
+        Assertions.assertNotNull(productService);
+
         reloadDataService.loadRandomData();
     }
 
