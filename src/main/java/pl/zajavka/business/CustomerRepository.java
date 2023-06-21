@@ -10,4 +10,6 @@ public interface CustomerRepository {
     void removeAll();
 
     Optional<Customer> find(String email);
+
+    void remove(String email);
 }

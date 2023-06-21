@@ -22,7 +22,9 @@ import java.util.Optional;
 public class CustomerDatabaseRepository implements CustomerRepository {
 
     private static final String SELECT_ONE_WHERE_EMAIL = "SELECT * FROM CUSTOMER WHERE EMAIL = :email";
-    public static final String DELETE_ALL="DELETE FROM CUSTOMER WHERE 1=1";
+    public static final String DELETE_ALL = "DELETE FROM CUSTOMER WHERE 1=1";
+    private static final String DELETE_WHERE_CUSTOMER_EMAIL =
+            "DELETE FROM CUSTOMER WHERE EMAIL = :email";
 
     private final SimpleDriverDataSource simpleDriverDataSource;
     private final DatabaseMapper databaseMapper;
@@ -39,15 +41,27 @@ public class CustomerDatabaseRepository implements CustomerRepository {
 
     @Override
     public void removeAll() {
-    new JdbcTemplate(simpleDriverDataSource).update(DELETE_ALL);
+        new JdbcTemplate(simpleDriverDataSource).update(DELETE_ALL);
     }
 
     @Override
     public Optional<Customer> find(String email) {
         final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
 
-        Map<String, Object> params = Map.of("email",email);
-        RowMapper<Customer> rowMapper = (resultSet, rowNum) -> databaseMapper.mapCustomer(resultSet,rowNum);
-        return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_ONE_WHERE_EMAIL,params,rowMapper));
+        Map<String, Object> params = Map.of("email", email);
+        RowMapper<Customer> rowMapper = (resultSet, rowNum) -> databaseMapper.mapCustomer(resultSet, rowNum);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_ONE_WHERE_EMAIL, params, rowMapper));
+        } catch (Exception e)
+        {
+            log.warn("Trying to find non-existing customer: [{}]",email);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void remove(String email) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        jdbcTemplate.update(DELETE_WHERE_CUSTOMER_EMAIL, Map.of("email", email));
     }
 }
