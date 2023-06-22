@@ -12,6 +12,7 @@ import pl.zajavka.domain.*;
 import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)
@@ -84,7 +85,7 @@ public class CustomerServiceTest {
     void thatPurchaseAndOpinionIsNotRemovedWhenCustomerRemovingFails() {
         //given
         final Customer customer = customerService.create(StoreFixtures.someCustomer()
-                .withDateOfBirth(LocalDate.of(1950,10,4)));
+                .withDateOfBirth(LocalDate.of(1950, 10, 4)));
         final Producer producer = producerService.create(StoreFixtures.someProducer());
         final Product product1 = productService.create(StoreFixtures.someProduct1(producer));
         final Product product2 = productService.create(StoreFixtures.someProduct2(producer));
@@ -104,15 +105,28 @@ public class CustomerServiceTest {
 
         Assertions.assertEquals(customer, customerService.find(customer.getEmail()));
         Assertions.assertEquals(
-                purchaseService.findAll(customer.getEmail()),
                 List.of(
-
-                )
-                );
+                        purchase1
+                                .withCustomer(Customer.builder().id(customer.getId()).build())
+                                .withProduct(Product.builder().id(product1.getId()).build())
+                                .withDateTime(purchase1.getDateTime().withOffsetSameInstant(ZoneOffset.UTC))
+                        ,
+                        purchase2
+                                .withCustomer(Customer.builder().id(customer.getId()).build())
+                                .withProduct(Product.builder().id(product2.getId()).build())
+                                .withDateTime(purchase2.getDateTime().withOffsetSameInstant(ZoneOffset.UTC))
+                ),
+                purchaseService.findAll(customer.getEmail())
+        );
         Assertions.assertEquals(
-                opinionService.findAll(customer.getEmail()),
-
-                );
+                List.of(
+                        opinion1
+                                .withCustomer(Customer.builder().id(customer.getId()).build())
+                                .withProduct(Product.builder().id(product1.getId()).build())
+                                .withDateTime(opinion1.getDateTime().withOffsetSameInstant(ZoneOffset.UTC))
+                ),
+                opinionService.findAll(customer.getEmail())
+        );
 
     }
 
