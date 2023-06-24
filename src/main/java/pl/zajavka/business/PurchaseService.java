@@ -33,4 +33,8 @@ public class PurchaseService {
     public List<Purchase> findAll(String email) {
         return purchaseRepository.findAll(email);
     }
+
+    public List<Purchase> findAll(String email, String productCode) {
+        return purchaseRepository.findAll(email, productCode);
+    }
 }
