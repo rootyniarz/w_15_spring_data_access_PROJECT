@@ -29,7 +29,11 @@ public class OpinionDatabaseRepository implements OpinionRepository {
             WHERE CUS.EMAIL = :email
             ORDER BY DATE_TIME
             """;
-    private static final String SELECT_ALL="SELECT * FROM OPINION";
+    private static final String SELECT_ALL = "SELECT * FROM OPINION";
+    private static final String SELECT_UNWANTED_OPINIONS =
+            "SELECT * FROM OPINION WHERE STARS<4";
+    private static final String DELETE_UNWANTED_OPINIONS =
+            "DELETE FROM OPINION WHERE STARS<4";
 
     private final SimpleDriverDataSource simpleDriverDataSource;
     private final DatabaseMapper databaseMapper;
@@ -66,7 +70,20 @@ public class OpinionDatabaseRepository implements OpinionRepository {
 
     @Override
     public List<Opinion> findAll(String email) {
-            NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-            return jdbcTemplate.query(SELECT_ALL_WHERE_CUSTOMER_EMAIL, Map.of("email",email),databaseMapper::mapOpinion);
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL_WHERE_CUSTOMER_EMAIL, Map.of("email", email), databaseMapper::mapOpinion);
+    }
+
+    @Override
+    public List<Opinion> findUnwantedOpinions() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_UNWANTED_OPINIONS, databaseMapper::mapOpinion);
+    }
+
+    @Override
+    public void removeUnwantedOpinions() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        int result = jdbcTemplate.update(DELETE_UNWANTED_OPINIONS);
+        log.debug("Removed: [{}] opinions.", result);
     }
 }
