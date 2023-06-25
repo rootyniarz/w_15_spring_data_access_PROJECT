@@ -66,3 +66,9 @@ CONSTRAINT fk_purchase_customer
 CONSTRAINT fk_purchase_product
  FOREIGN KEY (product_id) REFERENCES product (id)
 );
+
+alter sequence customer_id_seq restart with 101;
+alter sequence producer_id_seq restart with 21;
+alter sequence product_id_seq restart with 51;
+alter sequence purchase_id_seq restart with 301;
+alter sequence opinion_id_seq restart with 141;
