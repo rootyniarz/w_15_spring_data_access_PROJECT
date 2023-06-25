@@ -130,4 +130,18 @@ public class CustomerServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Polecenie 8")
+    void thatCustomersGivingUnwantedOpinionsAreRemoved() {
+        //given
+        reloadDataService.reloadData();
+        Assertions.assertEquals(100, customerService.findAll().size());
+
+        //when
+        customerService.removeUnwantedCustomers();
+
+        //then
+        Assertions.assertEquals(64, customerService.findAll().size());
+    }
+
 }

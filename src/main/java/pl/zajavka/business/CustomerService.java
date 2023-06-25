@@ -7,6 +7,7 @@ import pl.zajavka.domain.Customer;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -55,6 +56,15 @@ public class CustomerService {
 
     private boolean isOlderThen40(Customer existingCustomer) {
         return LocalDate.now().getYear() - existingCustomer.getDateOfBirth().getYear() > 40;
+    }
+
+    public void removeUnwantedCustomers() {
+        List<Customer> customers = customerRepository.findAll().stream()
+                .filter(customer -> !isOlderThen40(customer))
+                .filter(customer -> opinionService.customerGivesUnwantedOpinions(customer.getEmail()))
+                .toList();
+
+        customers.forEach(customer -> remove(customer.getEmail()));
     }
 }
 
