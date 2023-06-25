@@ -14,7 +14,7 @@ INSERT INTO CUSTOMER (ID, USER_NAME, EMAIL, NAME, SURNAME, DATE_OF_BIRTH, TELEPH
 (13, 'cvinickc', 'cvinickc@latimes.com', 'Colin', 'Vinick', '2003-10-22', null),
 (14, 'edetoiled', 'edetoiled@shoppro.jp', 'Emerson', 'Detoile', '1996-12-24', null),
 (15, 'gbeetone', 'gbeetone@dot.gov', 'Genevra', 'Beeton', '1940-10-22', '80-278-6481'),
-(16, 'wsimeonif', 'wsimeonif@webmd.com' 'Welby', 'Simeoni', '1983-3-15', '26-037-2470'),
+(16, 'wsimeonif', 'wsimeonif@webmd.com', 'Welby', 'Simeoni', '1983-3-15', '26-037-2470'),
 (17, 'aaloshiking', 'aaloshiking@dropbox.com', 'Aloysius', 'Aloshikin', '1989-9-26', '43-671-4386'),
 (18, 'tgerretsh', 'tgerretsh@bloomberg.com', 'Thatcher', 'Gerrets', '2005-2-6', null),
 (19, 'zwroathi', 'zwroathi@liveinternet.ru', 'Zorah', 'Wroath', '1966-1-21', null),

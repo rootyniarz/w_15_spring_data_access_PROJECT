@@ -9,7 +9,6 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Repository;
 import pl.zajavka.business.OpinionRepository;
 import pl.zajavka.domain.Opinion;
-import pl.zajavka.domain.Purchase;
 import pl.zajavka.infrastructure.configuration.DatabaseConfiguration;
 
 import java.util.List;
@@ -30,6 +29,7 @@ public class OpinionDatabaseRepository implements OpinionRepository {
             WHERE CUS.EMAIL = :email
             ORDER BY DATE_TIME
             """;
+    private static final String SELECT_ALL="SELECT * FROM OPINION";
 
     private final SimpleDriverDataSource simpleDriverDataSource;
     private final DatabaseMapper databaseMapper;
@@ -56,6 +56,12 @@ public class OpinionDatabaseRepository implements OpinionRepository {
     public void remove(String email) {
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
         jdbcTemplate.update(DELETE_ALL_WHERE_CUSTOMER_EMAIL, Map.of("email", email));
+    }
+
+    @Override
+    public List<Opinion> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL, databaseMapper::mapOpinion);
     }
 
     @Override

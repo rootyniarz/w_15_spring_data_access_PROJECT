@@ -36,6 +36,9 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
             AND PROD.PRODUCT_CODE = :productCode
             ORDER BY DATE_TIME           
             """;
+    private static final String SELECT_ALL="SELECT * FROM PURCHASE";
+
+
     private final SimpleDriverDataSource simpleDriverDataSource;
     private final DatabaseMapper databaseMapper;
 
@@ -61,6 +64,12 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
     public void removeAll(String email) {
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
         jdbcTemplate.update(DELETE_ALL_WHERE_CUSTOMER_EMAIL, Map.of("email", email));
+    }
+
+    @Override
+    public List<Purchase> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL, databaseMapper::mapPurchase);
     }
 
     @Override

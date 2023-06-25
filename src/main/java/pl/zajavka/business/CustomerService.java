@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.Customer;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +26,10 @@ public class CustomerService {
         opinionService.removeAll();
         purchaseService.removeAll();
         customerRepository.removeAll();
+    }
+
+    public List<Customer> findAll() {
+        return customerRepository.findAll();
     }
 
     public Customer find(String email) {

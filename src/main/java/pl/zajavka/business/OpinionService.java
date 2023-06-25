@@ -8,7 +8,6 @@ import pl.zajavka.domain.Opinion;
 import pl.zajavka.domain.Purchase;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -35,6 +34,9 @@ public class OpinionService {
         return opinionRepository.create(opinion);
     }
 
+    public List<Opinion> findAll() {
+        return opinionRepository.findAll();
+    }
     public void removeAll() {
         opinionRepository.removeAll();
     }

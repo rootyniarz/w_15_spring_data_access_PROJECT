@@ -10,6 +10,9 @@ public interface PurchaseRepository {
     void removeAll();
 
     void removeAll(String email);
+
+    List<Purchase> findAll();
+
     public List<Purchase> findAll(String email);
 
     List<Purchase> findAll(String email, String productCode);

@@ -11,13 +11,17 @@ import pl.zajavka.business.ProducerRepository;
 import pl.zajavka.domain.Producer;
 import pl.zajavka.infrastructure.configuration.DatabaseConfiguration;
 
+import java.util.List;
+
 @Slf4j
 @Repository
 @AllArgsConstructor
 public class ProducerDatabaseRepository implements ProducerRepository {
 
     public static final String DELETE_ALL="DELETE FROM PRODUCER WHERE 1=1";
+    private static final String SELECT_ALL="SELECT * FROM PRODUCER";
     private final SimpleDriverDataSource simpleDriverDataSource;
+    private final DatabaseMapper databaseMapper;
 
     @Override
     public Producer create(Producer producer) {
@@ -27,6 +31,12 @@ public class ProducerDatabaseRepository implements ProducerRepository {
 
         Number producerId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(producer));
         return producer.withId((long) producerId.intValue());
+    }
+
+    @Override
+    public List<Producer> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL, databaseMapper::mapProducer);
     }
 
     @Override

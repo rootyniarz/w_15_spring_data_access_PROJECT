@@ -1,13 +1,11 @@
 package pl.zajavka.business;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.PropertyValues;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.Purchase;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -28,6 +26,10 @@ public class PurchaseService {
     @Transactional
     public void removeAll(String email) {
         purchaseRepository.removeAll(email);
+    }
+
+    public List<Purchase> findAll() {
+        return purchaseRepository.findAll();
     }
 
     public List<Purchase> findAll(String email) {
