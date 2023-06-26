@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Repository;
 import pl.zajavka.business.PurchaseRepository;
+import pl.zajavka.domain.Opinion;
 import pl.zajavka.domain.Purchase;
 import pl.zajavka.infrastructure.configuration.DatabaseConfiguration;
 
@@ -37,6 +38,16 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
             ORDER BY DATE_TIME           
             """;
     private static final String SELECT_ALL="SELECT * FROM PURCHASE";
+    private static final String SELECT_ALL_BY_PRODUCT_CODE = """
+            SELECT * FROM PURCHASE AS PUR
+            INNER JOIN PRODUCT AS PRD ON PRD.ID=PUR.PRODUCT_ID
+            WHERE PRD.PRODUCT_CODE = :productCode
+            ORDER BY DATE_TIME
+            """;
+    private static final String DELETE_ALL_BY_PRODUCT_CODE = """
+            DELETE FROM PURCHASE
+            WHERE PRODUCT_ID IN (SELECT ID FROM PRODUCT WHERE PRODUCT_CODE = :productCode)
+            """;
 
 
     private final SimpleDriverDataSource simpleDriverDataSource;
@@ -85,5 +96,18 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
                 Map.of("email", email,
                         "productCode", productCode),
                 databaseMapper::mapPurchase);
+    }
+
+    @Override
+    public List<Purchase> findAllByProductCode(String productCode) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL_BY_PRODUCT_CODE,
+                Map.of("productCode", productCode),databaseMapper::mapPurchase);
+    }
+
+    @Override
+    public void removeAllByProductCode(String productCode) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        jdbcTemplate.update(DELETE_ALL_BY_PRODUCT_CODE, Map.of("productCode",productCode));
     }
 }

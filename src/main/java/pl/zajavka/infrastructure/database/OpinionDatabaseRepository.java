@@ -39,6 +39,16 @@ public class OpinionDatabaseRepository implements OpinionRepository {
             WHERE STARS<4
             AND CUSTOMER_ID IN (SELECT ID FROM CUSTOMER WHERE EMAIL = :email)
             """;
+    private static final String SELECT_ALL_BY_PRODUCT_CODE = """
+            SELECT * FROM OPINION AS OPN
+            INNER JOIN PRODUCT AS PRD ON  PRD.ID=OPN.PRODUCT_ID
+            WHERE PRD.PRODUCT_CODE = :productCode
+            ORDER BY DATE_TIME
+            """;
+    private static final String DELETE_ALL_BY_PRODUCT_CODE = """
+            DELETE FROM OPINION
+            WHERE PRODUCT_ID IN (SELECT ID FROM PRODUCT WHERE PRODUCT_CODE = :productCode)
+            """;
 
     private final SimpleDriverDataSource simpleDriverDataSource;
     private final DatabaseMapper databaseMapper;
@@ -98,5 +108,18 @@ public class OpinionDatabaseRepository implements OpinionRepository {
         return jdbcTemplate.query(SELECT_UNWANTED_OPINIONS_FOR_EMAIL,
                         Map.of("email", email), databaseMapper::mapOpinion)
         .size()>0;
+    }
+
+    @Override
+    public List<Opinion> findAllByProductCode(String productCode) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL_BY_PRODUCT_CODE,
+                Map.of("productCode", productCode),databaseMapper::mapOpinion);
+    }
+
+    @Override
+    public void removeAllByProductCode(String productCode) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        jdbcTemplate.update(DELETE_ALL_BY_PRODUCT_CODE, Map.of("productCode",productCode));
     }
 }

@@ -13,4 +13,6 @@ public interface ProductRepository {
     void removeAll();
 
     Optional<Product> find(String productCode);
+
+    void remove(String productCode);
 }

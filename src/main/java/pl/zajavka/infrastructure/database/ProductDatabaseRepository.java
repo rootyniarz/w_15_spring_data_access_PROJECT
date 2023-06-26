@@ -27,6 +27,9 @@ public class ProductDatabaseRepository implements ProductRepository {
             SELECT * FROM PRODUCT
             WHERE PRODUCT_CODE=:productCode
             """;
+    private static final String DELETE_WHERE_PRODUCT_CODE = """
+            DELETE FROM PRODUCT WHERE PRODUCT_CODE = :productCode
+            """;
     private final SimpleDriverDataSource simpleDriverDataSource;
     private final DatabaseMapper databaseMapper;
 
@@ -66,5 +69,11 @@ public class ProductDatabaseRepository implements ProductRepository {
             log.warn("Trying to find non-existing product: [{}]",productCode);
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void remove(String productCode) {
+        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        jdbcTemplate.update(DELETE_WHERE_PRODUCT_CODE, Map.of("productCode",productCode));
     }
 }

@@ -2,6 +2,7 @@ package pl.zajavka.business;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.Product;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public class ProductService {
 
     private ProductRepository productRepository;
+    private OpinionService opinionService;
+    private PurchaseService purchaseService;
 
     public Product create(Product product) {
         return productRepository.create(product);
@@ -28,5 +31,12 @@ public class ProductService {
         return productRepository.find(productCode)
                 .orElseThrow(() -> new RuntimeException("Product with product code: [%s] is missing".formatted(productCode)));
 
+    }
+
+    @Transactional
+    public void removeCompletely(String productCode) {
+        purchaseService.removeAllByProductCode(productCode);
+        opinionService.removeAllByProductCode(productCode);
+        productRepository.remove(productCode);
     }
 }
